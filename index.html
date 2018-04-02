@@ -22,8 +22,8 @@ function checkTime(i){
 }
 //MainJS
 $(document).ready(function(){
-    var breakTime = 10.00;
-    var workTime = 25.00;
+    var breakTime = 10;
+    var workTime = 25;
     $('circle').html(workTime);
     $('#plusB').on('click', function(){
         if (breakTime == 120){
@@ -31,7 +31,7 @@ $(document).ready(function(){
         } else{
         breakTime++;
         $("#break").html(breakTime);
-        $('text').html(workTime);
+        $('text').html(breakTime + " : 00");
     }
     });
     $('#plusW').on('click', function(){
@@ -40,7 +40,7 @@ $(document).ready(function(){
         } else{
         workTime++;
         $("#work").html(workTime);
-        $('text').html(workTime);
+        $('text').html(workTime + " : 00");
     }
     });
     $('#minusB').on('click', function(){
@@ -49,7 +49,7 @@ $(document).ready(function(){
         } else{
         breakTime--;
         $("#break").html(breakTime);
-        $('text').html(workTime);
+        $('text').html(breakTime + " : 00");
     }
     });
     $('#minusW').on('click', function(){
@@ -58,7 +58,7 @@ $(document).ready(function(){
         } else{
         workTime--;
         $("#work").html(workTime);
-        $('text').html(workTime);
+        $('text').html(workTime + " : 00");
     }
     });
     //timer code taken from https://codepen.io/yaphi1/pen/KpbRZL
@@ -80,10 +80,15 @@ function run_clock(id,endtime){
 	var clock = document.getElementById(id);
 	function update_clock(){
 		var t = time_remaining(endtime);
-        $('text').html(t.minutes+" : "+t.seconds);
+        if (t.seconds< 10){
+            $('text').html(t.minutes+" : 0"+t.seconds);
+        } else{
+            $('text').html(t.minutes+" : "+t.seconds);
+        }
 		if(t.total<=0){
+            var snd = new Audio("beep.wav");
+            snd.play();
             $('text').html("Break!")
-
         }
 	       }
 	    update_clock(); // run function once at first to avoid delay
@@ -93,75 +98,35 @@ function run_clock(id,endtime){
 
     });
 
-
-
-    //Break clock
-    $('#break').on('click', function(){
-        var time_in_minutes = breakTime;
-        var current_time = Date.parse(new Date());
-        var deadline = new Date(current_time + time_in_minutes*60*1000);
-
-
-    function time_remaining(endtime){
-    	var t = Date.parse(endtime) - Date.parse(new Date());
-    	var seconds = Math.floor( (t/1000) % 60 );
-    	var minutes = Math.floor( (t/1000/60) % 60 );
-    	var hours = Math.floor( (t/(1000*60*60)) % 24 );
-    	var days = Math.floor( t/(1000*60*60*24) );
-    	return {'total':t, 'days':days, 'hours':hours, 'minutes':minutes, 'seconds':seconds};
-    }
-    function run_clock(id,endtime){
-    	var clock = document.getElementById(id);
-    	function update_clock(){
-    		var t = time_remaining(endtime);
-            $('text').html(t.minutes+" : "+t.seconds);
-    		if(t.total<=0){
-                $('text').html("Restart the cycle!")
-            }
-    	       }
-    	    update_clock(); // run function once at first to avoid delay
-    	    var timeinterval = setInterval(update_clock2,1000);
-            }
-            run_clock('clockdiv',deadline2);
-    });
-
 });
 </script>
 <head>
     <meta charset= "UTF-8">
-    <title>Pomodoro Clock</title>
+    <title id="date">EST</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <html>
 <body onload="startTime()">
-    <h1>Pomodoro Clock</h1>
-    <p id="date"></p>
+    <h1 style="text-decoration: underline">Pomodoro Clock</h1></br>
+    <p style="color: white; font-family: Muli; font-size: 10px; text-align: center;">
+A Pomodoro kitchen timer, after which the method is named <a href="https://en.wikipedia.org/wiki/Pomodoro_Technique">The Pomodoro Technique</a> is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks.</p>
 <div>
-        <h2 style="position: fixed; left: 540px;">Break Time</h2>
-        <h2 style="position: fixed; right: 555px;">Work Time</h2>
-</div>
-<div>
-</br>
-</br>
-    <div class="container">
-        <img src="plus.png" id="plusB" style="width: 45px; position: fixed; right: 860px; top: 178px;">
-            <h3  id="break" style="position: fixed; left: 600px;">10</h3>
-        <img src="minus.png" id="minusB" style="width: 45px; position: fixed; left: 555px; top: 178px;">
-    </div>
-    <div class="container">
-        <img src="plus.png" id="plusW" style="width: 45px; position: fixed; right: 555px; top: 178px;">
-            <h3  id="work" style="position: fixed; right: 600px;">25</h3>
-        <img src="minus.png"  id="minusW" style="width: 45px; position: fixed; left: 860px; top: 178px;">
-    </div>
+    <center>
+        <div class="container">
+            <h2>Work Time</h2></br>
+            <img src="plus.png" id="plusW" style="width: 45px">
+            <h3  id="work">25</h3>
+            <img src="minus.png"  id="minusW" style="width: 45px;">
+        </div>
+    <button onClick="window.location.reload()" class="btn" style="background-color: #00b300"><img src="refresh.png" style="width: 20px"></button></br></br>
 
+    </center>
 </div>
 <svg height="400px" width="1200px">
     <circle cx="771" cy="200" r="150" stroke="white" stroke-width="3"/>
     <text id="timer" x="771" y="50%" text-anchor="middle" font-family="Muli" font-size="80px" fill="white" style="color: white;">25 : 00</text>
     </svg>
-    <center><button id="break" class="btn" style="color: #000000; background-color: #00b300">Break</button></br></br>
-    <button onClick="window.location.reload()" class="btn" style="background-color: #00b300"><img src="refresh.png" style="width: 20px"></button>
-</center>
+    <h5 style="color: #00b300; text-align: center; font-size: 10px;">***TO STOP THE BEEPING WHEN THE TIMER IS DONE, HIT THE RELOAD BUTTON***</h5>
 </body>
 <h3 style="font-size: 15px; color: white; font-faily: Muli; display: inline-block; position: fixed; right: 5px; bottom: 5px;">Made By: Elijah Harbut</h3>
 </html>
