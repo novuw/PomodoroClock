@@ -22,8 +22,8 @@ function checkTime(i){
 }
 //MainJS
 $(document).ready(function(){
-    var breakTime = 10;
-    var workTime = 25;
+    var breakTime = 10.00;
+    var workTime = 25.00;
     $('circle').html(workTime);
     $('#plusB').on('click', function(){
         if (breakTime == 120){
@@ -61,25 +61,70 @@ $(document).ready(function(){
         $('text').html(workTime);
     }
     });
+    //timer code taken from https://codepen.io/yaphi1/pen/KpbRZL
 $('circle').on('click', function(){
-    var startD =  new Date(); //Date we startin from(rn)
-    startD.setMinutes(startD.getMinutes() + 25);
-    var countD = startD; //Date We countin to
-    startD = new Date();
-    var x = setInterval(function() {
-        var distance = countD - startD;
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        $('text').html(minutes + seconds);
-        if (distance < 0) {
-        clearInterval(x);
-        $('text').html("Finished!");
-        alert("Take a break!");
-            }
+    var time_in_minutes = workTime;
+    var current_time = Date.parse(new Date());
+    var deadline = new Date(current_time + time_in_minutes*60*1000);
 
 
-        }, 1000);
+function time_remaining(endtime){
+	var t = Date.parse(endtime) - Date.parse(new Date());
+	var seconds = Math.floor( (t/1000) % 60 );
+	var minutes = Math.floor( (t/1000/60) % 60 );
+	var hours = Math.floor( (t/(1000*60*60)) % 24 );
+	var days = Math.floor( t/(1000*60*60*24) );
+	return {'total':t, 'days':days, 'hours':hours, 'minutes':minutes, 'seconds':seconds};
+}
+function run_clock(id,endtime){
+	var clock = document.getElementById(id);
+	function update_clock(){
+		var t = time_remaining(endtime);
+        $('text').html(t.minutes+" : "+t.seconds);
+		if(t.total<=0){
+            $('text').html("Break!")
+
+        }
+	       }
+	    update_clock(); // run function once at first to avoid delay
+	    var timeinterval = setInterval(update_clock,1000);
+        }
+        run_clock('clockdiv',deadline);
+
     });
+
+
+
+    //Break clock
+    $('#break').on('click', function(){
+        var time_in_minutes = breakTime;
+        var current_time = Date.parse(new Date());
+        var deadline = new Date(current_time + time_in_minutes*60*1000);
+
+
+    function time_remaining(endtime){
+    	var t = Date.parse(endtime) - Date.parse(new Date());
+    	var seconds = Math.floor( (t/1000) % 60 );
+    	var minutes = Math.floor( (t/1000/60) % 60 );
+    	var hours = Math.floor( (t/(1000*60*60)) % 24 );
+    	var days = Math.floor( t/(1000*60*60*24) );
+    	return {'total':t, 'days':days, 'hours':hours, 'minutes':minutes, 'seconds':seconds};
+    }
+    function run_clock(id,endtime){
+    	var clock = document.getElementById(id);
+    	function update_clock(){
+    		var t = time_remaining(endtime);
+            $('text').html(t.minutes+" : "+t.seconds);
+    		if(t.total<=0){
+                $('text').html("Restart the cycle!")
+            }
+    	       }
+    	    update_clock(); // run function once at first to avoid delay
+    	    var timeinterval = setInterval(update_clock2,1000);
+            }
+            run_clock('clockdiv',deadline2);
+    });
+
 });
 </script>
 <head>
@@ -112,7 +157,11 @@ $('circle').on('click', function(){
 </div>
 <svg height="400px" width="1200px">
     <circle cx="771" cy="200" r="150" stroke="white" stroke-width="3"/>
-    <text id="timer" x="771" y="50%" text-anchor="middle" font-family="Muli" font-size="100px" fill="white">25</text>
+    <text id="timer" x="771" y="50%" text-anchor="middle" font-family="Muli" font-size="80px" fill="white" style="color: white;">25 : 00</text>
     </svg>
+    <center><button id="break" class="btn" style="color: #000000; background-color: #00b300">Break</button></br></br>
+    <button onClick="window.location.reload()" class="btn" style="background-color: #00b300"><img src="refresh.png" style="width: 20px"></button>
+</center>
 </body>
+<h3 style="font-size: 15px; color: white; font-faily: Muli; display: inline-block; position: fixed; right: 5px; bottom: 5px;">Made By: Elijah Harbut</h3>
 </html>
