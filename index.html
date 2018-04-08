@@ -26,7 +26,7 @@ $(document).ready(function(){
     var workTime = 25;
     $('circle').html(workTime);
     $('#plusB').on('click', function(){
-        if (breakTime == 120){
+        if (breakTime == 60){
             alert("Can't go any higher!");;
         } else{
         breakTime++;
@@ -35,7 +35,7 @@ $(document).ready(function(){
     }
     });
     $('#plusW').on('click', function(){
-        if (workTime == 120){
+        if (workTime == 60){
             alert("Can't go any higher!");;
         } else{
         workTime++;
